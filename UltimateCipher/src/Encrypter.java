@@ -80,6 +80,7 @@ public class Encrypter {
 		int y = 0;
 		int z = 0;
 		boolean isDone = false;
+		boolean loopCanceler = false;
 		char[][] polybius = new char[ROWS][COLUMNS];
 		char[] originalMessage = new char[message.length()];
 		char[] alphabet = new char[26];
@@ -117,25 +118,41 @@ public class Encrypter {
 		}
 		
 		// Encrypt The message
-		for (int h = 0; h < originalMessage.length; h++) { // Change to a do while on the otter loop
+		do {
+			loopCanceler = false;	
 			for (int i = 0; i < ROWS; i++) {
-				for (int j = 0; j < COLUMNS; j++) {
-					if (originalMessage[z] == 'j') {
-						index3 = "31";
-						encryptedMessage.add(index3);
-						z++;
-					}
-					if (polybius[i][j] == originalMessage[z]) {
-						index1 = Integer.toString(i);
-						index2 = Integer.toString(j);
-						index = index1 + index2;
-						encryptedMessage.add(index);
-						z++;
+					for (int j = 0; j < COLUMNS; j++) {
+						if (loopCanceler == false) {
+							if (originalMessage[z] == 'j') {
+								index3 = "31";
+								encryptedMessage.add(index3);
+								loopCanceler = true;
+							}
+							if (originalMessage[z] == ' ') {
+								index3 = "54";
+								encryptedMessage.add(index3);
+								loopCanceler = true;
+							}
+							if (polybius[i][j] == originalMessage[z]) {
+								index1 = Integer.toString(i);
+								index2 = Integer.toString(j);
+								index = index1 + index2;
+								encryptedMessage.add(index);
+								loopCanceler = true;
+							}
+						}
 					}
 				}
-			}
-
-		}
+				
+				if (encryptedMessage.size() == originalMessage.length)
+				{
+					isDone = true;
+				} else {
+					z++;
+				}
+				
+		} while (isDone == false);
+		
 		
 		for (int i = 0; i < encryptedMessage.size(); i++) {
 			encrypted = encrypted + encryptedMessage.get(i);
